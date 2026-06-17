@@ -15,12 +15,12 @@
           v-model="formData.city"
           label="目的地"
           is-link
-          @click="showPopup = true;"
+          @click="showPopup = true"
           readonly
           placeholder="请选择城市"
           style="background: #f7f8fa; border-radius: 8px; margin-bottom: 12px"
         />
-         <van-field
+        <van-field
           v-model="formData.budget"
           label="预算（元）"
           type="number"
@@ -34,10 +34,30 @@
           placeholder="请输入天数"
           style="background: #f7f8fa; border-radius: 8px; margin-bottom: 12px"
         />
-        <van-button type="primary" size="large" round :loading="isLoading" @click="handleSubmit">开始规划</van-button>
+        <van-button
+          type="primary"
+          size="large"
+          round
+          :loading="isLoading"
+          @click="handleSubmit"
+          >开始规划</van-button
+        >
       </div>
-      <div class="card"></div>
-      <div class="card"></div>
+      <div class="card quick-action">
+        <div class="section-title">快捷入口</div>
+        <van-grid :column-num="2" :gutter="12">
+          <van-grid-item @click="goPage('/chat')" icon="chat-o" text="AI 对话" />
+          <van-grid-item @click="goPage('/profile')" icon="user-o" text="我的" />
+        </van-grid>
+      </div>
+      <div class="card popular-destions">
+        <div class="section-title">热门目的地</div>
+        <van-grid :column-num="4" :gutter="12">
+          <van-grid-item @click="SelectCity(city)" v-for="(city, index) in popularCities" :key="index">
+            <div class="city-tag" :class="{'active': formData.city === city}">{{ city }}</div>
+          </van-grid-item>
+        </van-grid>
+      </div>
     </div>
 
     <van-popup v-model:show="showPopup" round position="bottom">
@@ -45,7 +65,7 @@
         title="请选择目的地"
         :columns="cityColumns"
         @confirm="onCityConfirm"
-        @cancel="showPopup = false;"
+        @cancel="showPopup = false"
       />
     </van-popup>
   </div>
@@ -53,13 +73,10 @@
 
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
-const showPopup = ref(false);
-const formData = ref({
-  city: "", // 目的地
-  budget: null, // 预算（元）
-  days: null, // 天数
-});
+const router = useRouter();
+const popularCities = ['北京', '上海', '广州', '深圳', '成都', '杭州','西安','重庆'];
 const allCities = [
   "北京",
   "上海",
@@ -101,6 +118,18 @@ const allCities = [
   "太原",
   "石家庄",
 ];
+
+const goPage = (path) => {
+  router.push(path);
+};
+
+const showPopup = ref(false);
+const formData = ref({
+  city: "", // 目的地
+  budget: null, // 预算（元）
+  days: null, // 天数
+});
+
 const isLoading = ref(false);
 
 const cityColumns = allCities.map((city) => ({
@@ -108,20 +137,37 @@ const cityColumns = allCities.map((city) => ({
   value: city,
 }));
 
-const onCityConfirm = ({selectedOptions}) => {
-    formData.value.city = selectedOptions[0].value;
-    showPopup.value = false;
+const onCityConfirm = ({ selectedOptions }) => {
+  formData.value.city = selectedOptions[0].value;
+  showPopup.value = false;
 };
+
+const SelectCity = (city) => {
+  formData.value.city = city;
+}
+
 const handleSubmit = () => {
   isLoading.value = true;
   setTimeout(() => {
     isLoading.value = false;
   }, 3000);
-}
+};
 </script>
 
 <style scoped>
 .search-card {
   margin-bottom: 16px;
+}
+.city-tag {
+  padding: 8px 8px;
+  border-radius: 16px;
+  font-size: 14px;
+  color: #666;
+  background: #f7f8fa;
+  transition: all 0.3s;
+}
+.active {
+  background: #007AFF;
+  color: #fff;
 }
 </style>
