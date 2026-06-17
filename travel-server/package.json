@@ -1,0 +1,24 @@
+{
+  "name": "travel-server",
+  "version": "1.0.0",
+  "description": "智能景点介绍服务端基于node.js + express + langChain",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^11.1.2",
+      "onFail": "download"
+    }
+  },
+  "type": "module",
+  "dependencies": {
+    "express": "4.19.2"
+  }
+}
